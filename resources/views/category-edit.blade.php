@@ -53,8 +53,8 @@
             -->
 
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Новая категория</h1>
-                <a href="categories.html" class="btn btn-secondary">Назад к списку</a>
+                <h1>Редактирование категории</h1>
+                <a href="/admin" class="btn btn-secondary">Назад к списку</a>
             </div>
 
             <div class="row">
@@ -64,14 +64,15 @@
                             <h5 class="mb-0">Заполните информацию о категории</h5>
                         </div>
                         <div class="card-body">
-                            <form id="categoryForm" method="POST" action="{{ route('category.store') }}" novalidate>
+                            <form id="categoryForm" method="POST" action="{{ route('category.update', $category) }}" novalidate>
                                 @csrf
+                                @method('PUT')
                                 <div class="mb-3">
                                     <label for="categoryName" class="form-label">
                                         Название категории <span class="text-danger">*</span>
                                     </label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                           id="categoryName" name="name" required value=""
+                                           id="categoryName" name="name" required value="{{ $category->name }}"
                                            placeholder="Введите название категории (максимум 15 символов)">
                                     <!-- Сообщение об ошибке с сервера -->
                                     @error('name')
@@ -90,7 +91,7 @@
                                     </label>
                                     <textarea class="form-control @error('description') is-invalid @enderror"
                                               id="categoryDescription" name="description" maxlength="50" rows="3"
-                                              placeholder="Введите описание категории (максимум 50 символов)"></textarea>
+                                              placeholder="Введите описание категории (максимум 50 символов)">{{ $category->description }}</textarea>
                                     <!-- Сообщение об ошибке с сервера -->
                                     @error('description')
                                     <div class="invalid-feedback d-block">

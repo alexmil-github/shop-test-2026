@@ -44,7 +44,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>Категории</h1>
 {{--                <a href="/admin/categories/add" class="btn btn-primary">Добавить категорию</a>--}}
-                <a href="{{ route('addCategory') }}" class="btn btn-primary">Добавить категорию</a>
+                <a href="{{ route('category.create') }}" class="btn btn-primary">Добавить категорию</a>
             </div>
 
             <!-- Таблица категорий -->
@@ -62,71 +62,29 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @foreach($categories as $category)
                             <tr>
-                                <td>1</td>
-                                <td>Электроника</td>
-                                <td>Смартфоны, ноутбуки и другая техника</td>
-                                <td><span class="badge bg-primary">12</span></td>
+                                <td>{{ $category->id }}</td>
+                                <td>{{ $category->name }}</td>
+                                <td>{{ $category->description }}</td>
+{{--                                <td><span class="badge bg-primary">{{ \App\Models\Product::where('category_id', $category->id)->count() }}</span></td>--}}
+                                <td><span class="badge bg-primary">{{ $category->products->count() }}</span></td>
                                 <td>
-                                    <a href="category-view.html?id=1"
+                                    <a href="/admin/category/{{ $category->id }}"
                                        class="btn btn-sm btn-outline-info">Просмотр</a>
-                                    <a href="category-form.html?id=1"
+                                    <a href="/admin/category/{{ $category->id }}/edit"
                                        class="btn btn-sm btn-outline-warning">Редактировать</a>
-                                    <button class="btn btn-sm btn-outline-danger" disabled>Удалить</button>
+                                    @if($category->products->count() == 0)
+                                    <form action="{{ route('category.destroy', $category) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger">Удалить</button>
+                                    </form>
+                                    @endif
+
                                 </td>
                             </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Одежда</td>
-                                <td>Мужская и женская одежда</td>
-                                <td><span class="badge bg-primary">8</span></td>
-                                <td>
-                                    <a href="category-view.html?id=2"
-                                       class="btn btn-sm btn-outline-info">Просмотр</a>
-                                    <a href="category-form.html?id=2"
-                                       class="btn btn-sm btn-outline-warning">Редактировать</a>
-                                    <button class="btn btn-sm btn-outline-danger">Удалить</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Книги</td>
-                                <td>Художественная и научная литература</td>
-                                <td><span class="badge bg-primary">5</span></td>
-                                <td>
-                                    <a href="category-view.html?id=3"
-                                       class="btn btn-sm btn-outline-info">Просмотр</a>
-                                    <a href="category-form.html?id=3"
-                                       class="btn btn-sm btn-outline-warning">Редактировать</a>
-                                    <button class="btn btn-sm btn-outline-danger">Удалить</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Спорт</td>
-                                <td>Спортивные товары и инвентарь</td>
-                                <td><span class="badge bg-primary">0</span></td>
-                                <td>
-                                    <a href="category-view.html?id=4"
-                                       class="btn btn-sm btn-outline-info">Просмотр</a>
-                                    <a href="category-form.html?id=4"
-                                       class="btn btn-sm btn-outline-warning">Редактировать</a>
-                                    <button class="btn btn-sm btn-outline-danger">Удалить</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Дом и сад</td>
-                                <td>Товары для дома и садоводства</td>
-                                <td><span class="badge bg-primary">3</span></td>
-                                <td>
-                                    <a href="category-view.html?id=5"
-                                       class="btn btn-sm btn-outline-info">Просмотр</a>
-                                    <a href="category-form.html?id=5"
-                                       class="btn btn-sm btn-outline-warning">Редактировать</a>
-                                    <button class="btn btn-sm btn-outline-danger" disabled>Удалить</button>
-                                </td>
-                            </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
