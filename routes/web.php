@@ -11,4 +11,6 @@ Route::get('/admin', [\App\Http\Controllers\CategoryController::class, 'index'])
 
 Route::resource('admin/category', \App\Http\Controllers\CategoryController::class);
 
+Route::resource('admin/product', \App\Http\Controllers\ProductController::class);
+
 

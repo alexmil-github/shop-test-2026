@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ-панель - Категории</title>
-{{--    <link href="./assets/bootstrap.min.css" rel="stylesheet">  --}}
+    {{--    <link href="./assets/bootstrap.min.css" rel="stylesheet">  --}}
     <link href="{{ asset('assets/bootstrap.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('style.css') }}">
 </head>
@@ -21,10 +21,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/admin">Категории</a>
+                    <a class="nav-link active" href="categories.html">Категории</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/admin/product">Товары</a>
+                    <a class="nav-link" href="products.html">Товары</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="orders.html">Заказы</a>
@@ -42,12 +42,36 @@
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Категории</h1>
-{{--                <a href="/admin/categories/add" class="btn btn-primary">Добавить категорию</a>--}}
-                <a href="{{ route('category.create') }}" class="btn btn-primary">Добавить категорию</a>
+                <h1>Товары</h1>
+                <a href="/admin/product/create" class="btn btn-primary">Добавить товар</a>
             </div>
 
-            <!-- Таблица категорий -->
+            <!-- Фильтры -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Поиск</label>
+                            <input type="text" class="form-control" id="search" placeholder="Поиск по названию">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="categoryFilter" class="form-label">Категория</label>
+                            <select class="form-select" id="categoryFilter">
+                                <option selected value="">Все категории</option>
+                                <option value="1">Электроника</option>
+                                <option value="2">Одежда</option>
+                                <option value="3">Книги</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">Применить</button>
+                            <button type="reset" class="btn btn-secondary">Сбросить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Таблица товаров -->
             <div class="card shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -55,35 +79,31 @@
                             <thead class="table-light">
                             <tr>
                                 <th>ID</th>
+                                <th>Изображение</th>
                                 <th>Название</th>
-                                <th>Описание</th>
-                                <th>Товаров</th>
+                                <th>Категория</th>
+                                <th>Цена</th>
                                 <th>Действия</th>
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($categories as $category)
-                            <tr>
-                                <td>{{ $category->id }}</td>
-                                <td>{{ $category->name }}</td>
-                                <td>{{ $category->description }}</td>
-{{--                                <td><span class="badge bg-primary">{{ \App\Models\Product::where('category_id', $category->id)->count() }}</span></td>--}}
-                                <td><span class="badge bg-primary">{{ $category->products->count() }}</span></td>
-                                <td>
-                                    <a href="/admin/category/{{ $category->id }}"
-                                       class="btn btn-sm btn-outline-info">Просмотр</a>
-                                    <a href="/admin/category/{{ $category->id }}/edit"
-                                       class="btn btn-sm btn-outline-warning">Редактировать</a>
-                                    @if($category->products->count() == 0)
-                                    <form action="{{ route('category.destroy', $category) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
+                            @foreach($products as $product)
+                                <tr>
+                                    <td>{{$product->id}}</td>
+                                    <td>
+                                        <div class="product-thumbnail">
+                                            <img src="{{ asset('storage/'.$product->image_path)  }}" alt="{{ $product->name }}" class="img-thumbnail">
+                                        </div>
+                                    </td>
+                                    <td>{{ $product->name }}</td>
+                                    <td>{{ \App\Models\Category::find($product->category_id)->name  }}</td>
+                                    <td>{{  $product->price }} ₽</td>
+                                    <td>
+                                        <a href="product-view.html" class="btn btn-sm btn-outline-info">Просмотр</a>
+                                        <a href="product-form.html" class="btn btn-sm btn-outline-warning">Редактировать</a>
                                         <button class="btn btn-sm btn-outline-danger">Удалить</button>
-                                    </form>
-                                    @endif
-
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
                             @endforeach
                             </tbody>
                         </table>
@@ -111,5 +131,4 @@
 
 <script src="asset('assets/bootstrap.min.js')"></script>
 </body>
-
 </html>

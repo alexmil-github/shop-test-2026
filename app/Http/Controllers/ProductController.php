@@ -12,7 +12,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+
+        return view('products', compact('products'));
     }
 
     /**
@@ -20,7 +22,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('product-form');
     }
 
     /**
@@ -28,8 +30,32 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:20',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|max:50',
+            'price' => 'required|numeric|min:10',
+            'image' => 'required|image|mimes:jpg,jpeg|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+        }
+
+//        Создание товара
+
+        Product::create([
+            'name' => $request->name,
+            'category_id' => $request->category_id,
+            'description' => $request->description,
+            'price' => $request->price,
+            'image_path' => $imagePath,
+            'thumbnail_path' => $imagePath,
+        ]);
+
+        return redirect()->route('product.index');
     }
+
 
     /**
      * Display the specified resource.
