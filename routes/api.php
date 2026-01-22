@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\Api\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,5 +17,5 @@ Route::get('categories/{id}/products', [\App\Http\Controllers\Api\ProductControl
 
 
 Route::post('products/{id}/buy', [\App\Http\Controllers\Api\ProductController::class, 'buy'])->middleware('auth:api');
-
-
+Route::post('/payment-webhook', [ProductController::class, 'handleWebhook'])
+    ->name('payment.webhook');

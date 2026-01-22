@@ -50,7 +50,7 @@ class ProductController extends Controller
 
         //Отправляем запрос к платежной системе
 
-        $paymentResponse = Http::post('http://vippo.ru/payments.php', [
+        $paymentResponse = Http::post('http://example.local/payments.php', [
             'price' => $product->price,
             'webhook_url' => config('app.url') . '/api/payment-webhook',
         ])->json();
@@ -65,8 +65,33 @@ class ProductController extends Controller
         return response()->json([
            'pay_url' => $paymentResponse['pay_url'],
         ]);
+    }
 
+    public function handleWebhook(Request $request)
+    {
 
+        // 1. Получаем данные от платежной системы
+        $externalOrderId = $request->input('order_id');
+        $status = $request->input('status');
 
+        // 2. Находим заказ в нашей БД по external_order_id
+        $order = Order::where('external_order_id', $externalOrderId)->first();
+
+        if ($order) {
+            // 3. Обновляем статус заказа
+            $order->update([
+                'status' => $status // 'success' или 'failed'
+            ]);
+
+            // 4. Можно отправить уведомление пользователю и т.д.
+            if ($status === 'success') {
+                // Товар оплачен, можно его выдать
+            } else {
+                // Оплата не прошла
+            }
+        }
+
+        // 5. Возвращаем 204 (No Content) как требуется
+        return response()->noContent();
     }
 }
